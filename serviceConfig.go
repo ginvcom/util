@@ -112,9 +112,9 @@ func (cli Client) InitMerge(name, mode string, cPoint any) int64 {
 	} else {
 		err = conf.LoadFromJsonBytes([]byte(val), cPoint)
 		if err != nil {
-			logx.Error("配置中心服务配置错误格式错误")
+			logx.Errorf("配置中心服务配置错误格式错误: %v", err)
 		}
-		logx.Errorf("启动程序，合并配置中心服务配置成功, 配置version: %d！", version)
+		logx.Errorf("启动程序，合并配置中心服务配置成功, 配置version: %d", version)
 	}
 	return version
 }
