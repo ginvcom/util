@@ -97,15 +97,6 @@ func (cli Client) getConfigVal(serviceName string, version int64) (content strin
 }
 
 func (cli Client) InitMerge(name, mode string, cPoint any) int64 {
-	serviceNameField := logx.LogField{
-		Key:   "serviceName",
-		Value: name,
-	}
-	modeField := logx.LogField{
-		Key:   "mode",
-		Value: mode,
-	}
-	logx.AddGlobalFields(serviceNameField, modeField)
 	val, version, err := cli.GetConfig(name, mode, 0)
 	if err != nil {
 		logx.Error("合并配置中心服务配置失败, 原因:", err)
