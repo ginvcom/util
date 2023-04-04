@@ -3,7 +3,6 @@ package util
 import (
 	"context"
 	"net/http"
-	"net/url"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -33,9 +32,9 @@ func BaseCors(w http.ResponseWriter) {
 func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		uuid := r.Header.Get("x-request-uuid")
-		name := url.QueryEscape(r.Header.Get("x-request-name"))
-		requestURI := url.QueryEscape(r.Header.Get("x-request-uri"))
-		pageURI := url.QueryEscape(r.Header.Get("x-page-uri"))
+		name := r.Header.Get("x-request-name")
+		requestURI := r.Header.Get("x-request-uri")
+		pageURI := r.Header.Get("x-page-uri")
 		systemCode := r.Header.Get("x-request-system")
 		token := r.Header.Get("x-request-token")
 		ctx := context.WithValue(r.Context(), UUID, uuid)
