@@ -7,7 +7,7 @@ import (
 )
 
 // UUID 获取uuid
-func UUID() (uuid string, err error) {
+func GenerateUUID() (uuid string, err error) {
 	node, err := snowflake.NewNode(1)
 	if err != nil {
 		return
