@@ -161,11 +161,67 @@ func (cli Client) GetOneKeyByPrefix(keyPrefix string) (key string, err error) {
 	return "", errors.New("etcd not exit prefix key:" + keyPrefix)
 }
 
+// 基于创建时间降序获取key前缀的第一个key
+// 其实 clientv3.WithSort(clientv3.SortByCreateRevision, clientv3.SortDescend) 可以去掉，默认也是按这个排序
+func (cli Client) GetOneKeyByPrefixDesc(keyPrefix string) (key string, err error) {
+	opts := []clientv3.OpOption{
+		clientv3.WithPrefix(),
+		clientv3.WithKeysOnly(),
+		clientv3.WithSort(clientv3.SortByCreateRevision, clientv3.SortDescend),
+		clientv3.WithLimit(1),
+	}
+	resp, err := cli.GetWithOption(keyPrefix, opts)
+
+	if err != nil {
+		return
+	}
+
+	if len(resp) == 0 {
+		return "", errors.New("etcd not exit prefix key:" + keyPrefix)
+	}
+
+	item := resp[0]
+	for k := range item {
+		key = k
+		return
+	}
+
+	return "", errors.New("etcd not exit prefix key:" + keyPrefix)
+}
+
 // 基于key降序获取key前缀的第一个kv
 func (cli Client) GetOneByPrefix(keyPrefix string) (key string, value []byte, err error) {
 	opts := []clientv3.OpOption{
 		clientv3.WithPrefix(),
 		clientv3.WithSort(clientv3.SortByKey, clientv3.SortDescend),
+		clientv3.WithLimit(1),
+	}
+	resp, err := cli.GetWithOption(keyPrefix, opts)
+
+	if err != nil {
+		return
+	}
+
+	if len(resp) == 0 {
+		return "", nil, errors.New("etcd not exit prefix key:" + keyPrefix)
+	}
+
+	item := resp[0]
+	for k, v := range item {
+		key = k
+		value = v
+		return
+	}
+
+	return "", nil, errors.New("etcd not exit prefix key:" + keyPrefix)
+}
+
+// 基于创建时间降序获取key前缀的第一个kv
+// 其实 clientv3.WithSort(clientv3.SortByCreateRevision, clientv3.SortDescend) 可以去掉，默认也是按这个排序
+func (cli Client) GetOneByPrefixDesc(keyPrefix string) (key string, value []byte, err error) {
+	opts := []clientv3.OpOption{
+		clientv3.WithPrefix(),
+		clientv3.WithSort(clientv3.SortByCreateRevision, clientv3.SortDescend),
 		clientv3.WithLimit(1),
 	}
 	resp, err := cli.GetWithOption(keyPrefix, opts)
