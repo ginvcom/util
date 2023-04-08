@@ -37,6 +37,7 @@ func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		pageURI := r.Header.Get("x-page-uri")
 		systemCode := r.Header.Get("x-request-system")
 		token := r.Header.Get("x-request-token")
+		traceId := r.Header.Get("x-trace-id")
 		ctx := context.WithValue(r.Context(), UUID, uuid)
 		ctx = context.WithValue(ctx, Name, name)
 		ctx = context.WithValue(ctx, SystemCode, systemCode)
@@ -61,7 +62,14 @@ func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			Key:   "requestURI",
 			Value: requestURI,
 		}
-		ctx = logx.WithFields(ctx, systemField, pageURIField, requestURIField, uuidField, nameField)
+		traceField := logx.LogField{
+			Key:   "trace",
+			Value: traceId,
+		}
+		ctx = logx.ContextWithFields(ctx, systemField, pageURIField, requestURIField, uuidField, nameField)
+		if len(traceId) == 32 {
+			ctx = logx.ContextWithFields(ctx, traceField)
+		}
 		next(w, r.WithContext(ctx))
 	}
 }
