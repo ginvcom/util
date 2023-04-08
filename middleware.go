@@ -27,6 +27,7 @@ func BaseCors(w http.ResponseWriter) {
 	w.Header().Add("Access-Control-Allow-Headers", "x-request-system")
 	w.Header().Add("Access-Control-Allow-Headers", "x-request-service")
 	w.Header().Add("Access-Control-Allow-Headers", "x-request-token")
+	w.Header().Add("Access-Control-Allow-Headers", "x-trace-id")
 }
 
 func BaseMiddleware(next http.HandlerFunc) http.HandlerFunc {
