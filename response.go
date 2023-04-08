@@ -21,7 +21,7 @@ type Body struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
-func (e *ErrorMsg) ErrResponse(w http.ResponseWriter) {
+func (e *ErrorMsg) Response(w http.ResponseWriter) {
 	body := Body{
 		Code: e.Code,
 		Msg:  e.Msg,
