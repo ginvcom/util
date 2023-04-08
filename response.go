@@ -21,10 +21,10 @@ type Body struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
-func ErrResponse(w http.ResponseWriter, errMsg ErrorMsg) {
+func (e *ErrorMsg) ErrResponse(w http.ResponseWriter) {
 	body := Body{
-		Code: errMsg.Code,
-		Msg:  errMsg.Msg,
+		Code: e.Code,
+		Msg:  e.Msg,
 	}
 	httpx.OkJson(w, body)
 }
